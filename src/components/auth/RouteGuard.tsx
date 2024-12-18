@@ -13,34 +13,39 @@ export default function RouteGuard({ children }: RouteGuardProps) {
   const pathname = usePathname();
   const { token } = useAuthStore();
   
-  // 定义公开路由和认证路由
-  const publicRoutes = ['/', '/login', '/register', '/forgot-password'];
-  const authRoutes = ['/dashboard'];
+  // 定义所有需要认证的路由
+  const authRoutes = [
+    '/dashboard',
+    '/income-expense',
+    '/investment',
+    '/assets',
+    '/reports',
+    '/budget',
+    '/goals',
+    '/settings'
+  ];
 
   useEffect(() => {
     // 调试信息
     console.log('RouteGuard:', {
       pathname,
       token,
-      isPublicRoute: publicRoutes.includes(pathname),
       isAuthRoute: authRoutes.includes(pathname)
     });
 
-    const handleRouting = async () => {
-      try {
-        // 如果是认证路由且未登录，重定向到登录页
-        if (authRoutes.includes(pathname) && !token) {
-          router.replace('/login');
-          return;
-        }
+    const handleRouting = () => {
+      // 如果已登录且在登录页，重定向到仪表盘
+      if (token && pathname === '/login') {
+        console.log('已登录，重定向到仪表盘');
+        router.push('/dashboard');
+        return;
+      }
 
-        // 如果已登录且在登录页，重定向到仪表盘
-        if (token && pathname === '/login') {
-          router.replace('/dashboard');
-          return;
-        }
-      } catch (error) {
-        console.error('RouteGuard error:', error);
+      // 如果未登录且访问需要认证的页面，重定向到登录页
+      if (!token && authRoutes.includes(pathname)) {
+        console.log('未登录，重定向到登录页');
+        router.push('/login');
+        return;
       }
     };
 

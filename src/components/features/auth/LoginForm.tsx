@@ -32,8 +32,10 @@ export default function LoginForm() {
       const { remember, ...loginParams } = values;
       const response = await authService.login(loginParams);
       
-      setToken(response.token);
-      setUser(response.user);
+      await Promise.all([
+        setToken(response.token),
+        setUser(response.user)
+      ]);
 
       if (remember) {
         localStorage.setItem('remember-credentials', JSON.stringify({
@@ -45,12 +47,8 @@ export default function LoginForm() {
 
       message.success('登录成功');
       
-      setTimeout(() => {
-        console.log('Redirecting to dashboard...');
-        console.log('Current token:', response.token);
-        console.log('Current user:', response.user);
-        router.replace('/dashboard');
-      }, 100);
+      router.push('/dashboard');
+      
     } catch (err) {
       const error = err as Error;
       setError(error.message);
