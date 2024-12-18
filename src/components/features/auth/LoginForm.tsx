@@ -1,29 +1,40 @@
 'use client';
 
-import React, { useEffect } from 'react';
-import { Form, Input, Button, Checkbox, message } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Checkbox, App } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
 import { authService } from '@/services/auth';
 import type { ILoginParams } from '@/types/auth';
+import { Button } from '@/components/common/Button';
 
 export default function LoginForm() {
   const router = useRouter();
-  const { setUser, setToken, setLoading, setError } = useAuthStore();
+  const { message } = App.useApp();
+  const { user, token, setUser, setToken, setLoading, setError } = useAuthStore();
   const [form] = Form.useForm();
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (token && user) {
+      router.replace('/dashboard');
+    }
+  }, [token, user, router]);
 
   const handleLogin = async (values: ILoginParams & { remember: boolean }) => {
     try {
+      setIsLoading(true);
       setLoading(true);
+      setError(null);
+      
       const { remember, ...loginParams } = values;
       const response = await authService.login(loginParams);
       
-      setUser(response.user);
       setToken(response.token);
+      setUser(response.user);
 
-      // 如果选择记住我，将凭证存储到 localStorage
       if (remember) {
         localStorage.setItem('remember-credentials', JSON.stringify({
           email: values.email,
@@ -33,22 +44,32 @@ export default function LoginForm() {
       }
 
       message.success('登录成功');
-      router.push('/dashboard');
+      
+      setTimeout(() => {
+        console.log('Redirecting to dashboard...');
+        console.log('Current token:', response.token);
+        console.log('Current user:', response.user);
+        router.replace('/dashboard');
+      }, 100);
     } catch (err) {
       const error = err as Error;
       setError(error.message);
       message.error(error.message || '登录失败');
     } finally {
+      setIsLoading(false);
       setLoading(false);
     }
   };
 
-  // 获取记住的凭证
   useEffect(() => {
-    const remembered = localStorage.getItem('remember-credentials');
-    if (remembered) {
-      const { email } = JSON.parse(remembered);
-      form.setFieldsValue({ email, remember: true });
+    try {
+      const remembered = localStorage.getItem('remember-credentials');
+      if (remembered) {
+        const { email } = JSON.parse(remembered);
+        form.setFieldsValue({ email, remember: true });
+      }
+    } catch (error) {
+      console.error('Failed to load remembered credentials:', error);
     }
   }, [form]);
 
@@ -102,7 +123,13 @@ export default function LoginForm() {
       </Form.Item>
 
       <Form.Item>
-        <Button type="primary" htmlType="submit" block size="large">
+        <Button 
+          type="primary" 
+          htmlType="submit" 
+          block 
+          size="large"
+          loading={isLoading}
+        >
           登录
         </Button>
       </Form.Item>

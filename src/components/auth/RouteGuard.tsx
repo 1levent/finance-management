@@ -3,48 +3,49 @@
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore } from '@/store/auth';
-import { Spin } from 'antd';
 
-interface IRouteGuardProps {
+interface RouteGuardProps {
   children: React.ReactNode;
 }
 
-const publicPaths = ['/login', '/register', '/forgot-password'];
-
-const RouteGuard: React.FC<IRouteGuardProps> = ({ children }) => {
+export default function RouteGuard({ children }: RouteGuardProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, isLoading } = useAuthStore();
+  const { token } = useAuthStore();
+  
+  // 定义公开路由和认证路由
+  const publicRoutes = ['/', '/login', '/register', '/forgot-password'];
+  const authRoutes = ['/dashboard'];
 
   useEffect(() => {
-    if (!isLoading && !user && !publicPaths.includes(pathname)) {
-      router.replace('/login');
-      return;
-    }
+    // 调试信息
+    console.log('RouteGuard:', {
+      pathname,
+      token,
+      isPublicRoute: publicRoutes.includes(pathname),
+      isAuthRoute: authRoutes.includes(pathname)
+    });
 
-    if (!isLoading && user && publicPaths.includes(pathname)) {
-      router.replace('/dashboard');
-      return;
-    }
-  }, [user, isLoading, pathname, router]);
+    const handleRouting = async () => {
+      try {
+        // 如果是认证路由且未登录，重定向到登录页
+        if (authRoutes.includes(pathname) && !token) {
+          router.replace('/login');
+          return;
+        }
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Spin size="large" tip="加载中..." />
-      </div>
-    );
-  }
+        // 如果已登录且在登录页，重定向到仪表盘
+        if (token && pathname === '/login') {
+          router.replace('/dashboard');
+          return;
+        }
+      } catch (error) {
+        console.error('RouteGuard error:', error);
+      }
+    };
 
-  if (publicPaths.includes(pathname) || user) {
-    return <>{children}</>;
-  }
+    handleRouting();
+  }, [pathname, token, router]);
 
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <Spin size="large" tip="加载中..." />
-    </div>
-  );
-};
-
-export default RouteGuard; 
+  return <>{children}</>;
+} 

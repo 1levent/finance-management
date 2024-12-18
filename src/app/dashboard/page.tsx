@@ -51,16 +51,14 @@ export default function DashboardPage() {
   return (
     <div className="p-6">
       <OverviewCards data={mockData.overview} />
-      
-      <Row gutter={[16, 16]} className="mt-4">
-        <Col xs={24} lg={16}>
+      <Row gutter={[16, 16]} className="mt-6">
+        <Col span={16}>
           <TrendChart data={mockData.trend} />
         </Col>
-        <Col xs={24} lg={8}>
+        <Col span={8}>
           <AssetDistribution data={mockData.assets} />
         </Col>
       </Row>
-
       <RecentTransactions data={mockData.transactions} />
     </div>
   );

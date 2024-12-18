@@ -1,13 +1,34 @@
 'use client';
 
 import { Layout, Button, Avatar, Dropdown } from 'antd';
+import type { MenuProps } from 'antd';
 import { MenuFoldOutlined, MenuUnfoldOutlined, UserOutlined } from '@ant-design/icons';
 import { IHeaderProps } from '@/types/layout';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/store/auth';
 
 const { Header: AntHeader } = Layout;
 
 const Header: React.FC<IHeaderProps> = ({ collapsed, onToggle }) => {
-  const userMenuItems = [
+  const router = useRouter();
+  const { logout } = useAuthStore();
+
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
+    switch (key) {
+      case 'profile':
+        router.push('/setting/profile');
+        break;
+      case 'settings':
+        router.push('/setting');
+        break;
+      case 'logout':
+        logout();
+        router.replace('/login');
+        break;
+    }
+  };
+
+  const userMenuItems: MenuProps['items'] = [
     {
       key: 'profile',
       label: '个人信息',
@@ -22,6 +43,7 @@ const Header: React.FC<IHeaderProps> = ({ collapsed, onToggle }) => {
     {
       key: 'logout',
       label: '退出登录',
+      danger: true,
     },
   ];
 
@@ -34,7 +56,7 @@ const Header: React.FC<IHeaderProps> = ({ collapsed, onToggle }) => {
         className="w-16 h-16"
       />
       <div className="flex items-center gap-4">
-        <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
+        <Dropdown menu={{ items: userMenuItems, onClick: handleMenuClick }} placement="bottomRight">
           <Avatar 
             icon={<UserOutlined />} 
             className="cursor-pointer"
