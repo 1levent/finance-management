@@ -1,0 +1,74 @@
+src/
+├── app/                    # App Router
+│   ├── (auth)/            # 认证相关路由组
+│   │   ├── login/
+│   │   │   ├── page.tsx
+│   │   │   ├── loading.tsx
+│   │   │   └── actions.ts
+│   │   ├── register/
+│   │   └── forgot-password/
+│   ├── dashboard/
+│   │   ├── page.tsx
+│   │   ├── loading.tsx
+│   │   └── error.tsx
+│   ├── income-expense/
+│   ├── investment/
+│   ├── assets/
+│   ├── reports/
+│   ├── budget/
+│   ├── goals/
+│   ├── settings/
+│   ├── api/               # API 路由
+│   │   ├── auth/
+│   │   ├── transactions/
+│   │   └── users/
+│   ├── layout.tsx         # 根布局
+│   ├── providers.tsx      # 全局 Provider
+│   └── globals.css        # 全局样式
+├── components/
+│   ├── ui/               # 基础 UI 组件
+│   │   ├── button/
+│   │   ├── input/
+│   │   ├── select/
+│   │   └── table/
+│   ├── common/           # 通用业务组件
+│   │   ├── header/
+│   │   ├── footer/
+│   │   └── sidebar/
+│   ├── layout/           # 布局组件
+│   │   ├── main-layout/
+│   │   └── auth-layout/
+│   └── features/         # 功能模块组件
+│       ├── dashboard/
+│       ├── transactions/
+│       └── reports/
+├── lib/                  # 核心库
+│   ├── db.ts            # 数据库客户端
+│   ├── auth.ts          # 认证相关
+│   └── utils/           # 工具函数
+│       ├── format.ts
+│       ├── validation.ts
+│       └── helpers.ts
+├── hooks/               # 自定义 Hooks
+│   ├── use-auth.ts
+│   ├── use-transactions.ts
+│   └── use-form.ts
+├── services/           # API 服务
+│   ├── api-client.ts   # Axios 实例配置
+│   ├── auth.ts
+│   └── transactions.ts
+├── store/              # 状态管理
+│   ├── auth.ts
+│   ├── transaction.ts
+│   └── settings.ts
+├── types/              # TypeScript 类型
+│   ├── common.ts
+│   ├── auth.ts
+│   └── api.ts
+├── config/            # 配置文件
+│   ├── site.ts       # 站点配置
+│   ├── menu.ts       # 菜单配置
+│   └── constants.ts   # 常量
+└── styles/           # 样式文件
+    ├── components/   # 组件样式
+    └── themes/       # 主题配置
