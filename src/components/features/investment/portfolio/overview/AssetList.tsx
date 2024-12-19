@@ -1,145 +1,94 @@
 'use client';
 
-import { Card, Table, Tag, Button, Space, App } from 'antd';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import type { IAsset } from '@/types/portfolio';
-import { useState } from 'react';
-import AssetDetail from './AssetDetail';
+import { Table, Tag, Space, Progress } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
 
-interface AssetListProps {
-  assets: IAsset[];
+interface IAsset {
+  key: string;
+  name: string;
+  type: string;
+  amount: number;
+  profit: number;
+  profitPercent: number;
+  risk: 'high' | 'medium' | 'low';
 }
 
-export default function AssetList({ assets }: AssetListProps) {
-  const { message } = App.useApp();
-  const [selectedAsset, setSelectedAsset] = useState<IAsset | null>(null);
-  const [detailVisible, setDetailVisible] = useState(false);
+const mockData: IAsset[] = [
+  {
+    key: '1',
+    name: '蚂蚁理财',
+    type: '货币基金',
+    amount: 50000,
+    profit: 1200,
+    profitPercent: 2.4,
+    risk: 'low',
+  },
+  // ... 其他数据
+];
 
-  const columns = [
-    {
-      title: '名称',
-      dataIndex: 'name',
-      key: 'name',
-    },
-    {
-      title: '类型',
-      dataIndex: 'type',
-      key: 'type',
-      render: (type: string) => {
-        const typeMap = {
-          stock: { text: '股票', color: 'blue' },
-          fund: { text: '基金', color: 'green' },
-          bond: { text: '债券', color: 'orange' },
-          deposit: { text: '存款', color: 'purple' },
-          other: { text: '其他', color: 'default' },
-        };
-        const item = typeMap[type as keyof typeof typeMap];
-        return <Tag color={item.color}>{item.text}</Tag>;
-      },
-    },
-    {
-      title: '持仓成本',
-      dataIndex: 'cost',
-      key: 'cost',
-      align: 'right' as const,
-      render: (value: number) => `¥${value.toFixed(2)}`,
-    },
-    {
-      title: '当前市值',
-      dataIndex: 'currentValue',
-      key: 'currentValue',
-      align: 'right' as const,
-      render: (value: number) => `¥${value.toFixed(2)}`,
-    },
-    {
-      title: '收益金额',
-      dataIndex: 'profit',
-      key: 'profit',
-      align: 'right' as const,
-      render: (value: number) => (
-        <span style={{ color: value >= 0 ? '#3f8600' : '#cf1322' }}>
-          {value >= 0 ? '+' : ''}{value.toFixed(2)}
-        </span>
-      ),
-    },
-    {
-      title: '收益率',
-      dataIndex: 'profitRate',
-      key: 'profitRate',
-      align: 'right' as const,
-      render: (value: number) => (
-        <span style={{ color: value >= 0 ? '#3f8600' : '#cf1322' }}>
-          {(value * 100).toFixed(2)}%
-        </span>
-      ),
-    },
-    {
-      title: '操作',
-      key: 'action',
-      width: 120,
-      render: (_, record: IAsset) => (
-        <Space size="small">
-          <Button 
-            type="link" 
-            size="small" 
-            icon={<EditOutlined />}
-            onClick={(e) => {
-              e.stopPropagation();
-              message.success('编辑功能待实现');
-            }}
-          >
-            编辑
-          </Button>
-          <Button 
-            type="link" 
-            size="small" 
-            danger 
-            icon={<DeleteOutlined />}
-            onClick={(e) => {
-              e.stopPropagation();
-              message.success('删除功能待实现');
-            }}
-          >
-            删除
-          </Button>
-        </Space>
-      ),
-    },
-  ];
+const riskColors = {
+  high: '#ff4d4f',
+  medium: '#faad14',
+  low: '#52c41a',
+};
 
-  return (
-    <>
-      <Card 
-        title="资产列表" 
-        size="small"
-        extra={
-          <Button type="primary" size="small" onClick={() => message.success('新增功能待实现')}>
-            新增资产
-          </Button>
-        }
-      >
-        <Table
-          columns={columns}
-          dataSource={assets}
-          rowKey="id"
+const riskLabels = {
+  high: '高',
+  medium: '中',
+  low: '低',
+};
+
+const columns: ColumnsType<IAsset> = [
+  {
+    title: '资产名称',
+    dataIndex: 'name',
+    key: 'name',
+  },
+  {
+    title: '类型',
+    dataIndex: 'type',
+    key: 'type',
+  },
+  {
+    title: '金额',
+    dataIndex: 'amount',
+    key: 'amount',
+    render: (value: number) => `¥${value.toLocaleString()}`,
+  },
+  {
+    title: '收益',
+    key: 'profit',
+    render: (_: unknown, record: IAsset) => (
+      <Space direction="vertical" size="small">
+        <span className={record.profit >= 0 ? 'text-green-500' : 'text-red-500'}>
+          ¥{record.profit.toLocaleString()}
+        </span>
+        <Progress
+          percent={record.profitPercent}
           size="small"
-          pagination={false}
-          scroll={{ y: 240 }}
-          onRow={(record) => ({
-            onClick: () => {
-              setSelectedAsset(record);
-              setDetailVisible(true);
-            },
-            style: { cursor: 'pointer' },
-          })}
+          status={record.profit >= 0 ? 'success' : 'exception'}
+          format={(percent) => `${percent}%`}
         />
-      </Card>
+      </Space>
+    ),
+  },
+  {
+    title: '风险等级',
+    key: 'risk',
+    dataIndex: 'risk',
+    render: (risk: IAsset['risk']) => (
+      <Tag color={riskColors[risk]}>{riskLabels[risk]}</Tag>
+    ),
+  },
+];
 
-      <AssetDetail
-        asset={selectedAsset}
-        visible={detailVisible}
-        onClose={() => setDetailVisible(false)}
-      />
-    </>
+export default function AssetList() {
+  return (
+    <Table<IAsset>
+      columns={columns}
+      dataSource={mockData}
+      size="small"
+      pagination={false}
+    />
   );
 } 

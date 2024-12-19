@@ -123,24 +123,62 @@ export const menuConfig: IMenuItem[] = [
     ],
   },
   {
-    key: '/asset',
-    icon: Icons.BankOutlined,
+    key: 'assets',
+    icon: Icons.WalletOutlined,
     label: '资产管理',
     children: [
       {
-        key: '/asset/account',
+        key: '/assets/accounts',
         label: '账户管理',
-        path: '/asset/account',
+        children: [
+          {
+            key: '/assets/accounts/bank',
+            label: '银行账户',
+            path: '/assets/accounts/bank',
+          },
+          {
+            key: '/assets/accounts/credit',
+            label: '信用卡',
+            path: '/assets/accounts/credit',
+          },
+          {
+            key: '/assets/accounts/ewallet',
+            label: '电子钱包',
+            path: '/assets/accounts/ewallet',
+          },
+        ],
       },
       {
-        key: '/asset/credit',
-        label: '信用卡',
-        path: '/asset/credit',
+        key: '/assets/debt',
+        label: '债务管理',
+        children: [
+          {
+            key: '/assets/debt/loans',
+            label: '借贷记录',
+            path: '/assets/debt/loans',
+          },
+          {
+            key: '/assets/debt/repayment',
+            label: '还款计划',
+            path: '/assets/debt/repayment',
+          },
+        ],
       },
       {
-        key: '/asset/loan',
-        label: '借贷管理',
-        path: '/asset/loan',
+        key: '/assets/tools',
+        label: '工具',
+        children: [
+          {
+            key: '/assets/tools/calculator',
+            label: '利息计算器',
+            path: '/assets/tools/calculator',
+          },
+          {
+            key: '/assets/tools/reminder',
+            label: '债务提醒',
+            path: '/assets/tools/reminder',
+          },
+        ],
       },
     ],
   },
