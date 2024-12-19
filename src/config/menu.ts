@@ -36,24 +36,19 @@ const menuConfig: IMenuItem[] = [
     label: '收支管理',
     children: [
       {
-        key: 'transaction-list',
+        key: '/transaction/list',
         label: '收支记录',
         path: '/transaction/list',
       },
       {
-        key: 'transaction-category',
+        key: '/transaction/category',
         label: '分类管理',
         path: '/transaction/category',
       },
       {
-        key: 'transaction-recurring',
+        key: '/transaction/recurring',
         label: '定期收支',
         path: '/transaction/recurring',
-      },
-      {
-        key: 'transaction-receipt',
-        label: '票据管理',
-        path: '/transaction/receipt',
       },
     ],
   },

@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
+import { ReactElement } from 'react';
 
-export interface ILayoutProps {
-  children: ReactNode;
+export interface IMainLayoutProps {
+  children: ReactElement;
 }
 
 export interface IHeaderProps {

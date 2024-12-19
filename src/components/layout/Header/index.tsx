@@ -48,18 +48,22 @@ const Header: React.FC<IHeaderProps> = ({ collapsed, onToggle }) => {
   ];
 
   return (
-    <AntHeader className="bg-white px-4 flex items-center justify-between">
+    <AntHeader className="bg-white px-6 flex items-center justify-between fixed top-0 right-0 left-0 z-10 shadow-sm" style={{ 
+      marginLeft: collapsed ? 80 : 256,
+      transition: 'all 0.2s',
+      width: 'auto' 
+    }}>
       <Button
         type="text"
         icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
         onClick={onToggle}
-        className="w-16 h-16"
+        className="text-lg"
       />
       <div className="flex items-center gap-4">
         <Dropdown menu={{ items: userMenuItems, onClick: handleMenuClick }} placement="bottomRight">
           <Avatar 
             icon={<UserOutlined />} 
-            className="cursor-pointer"
+            className="cursor-pointer bg-primary"
             aria-label="用户菜单"
           />
         </Dropdown>

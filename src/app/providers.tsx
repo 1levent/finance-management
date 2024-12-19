@@ -1,30 +1,17 @@
 'use client';
 
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App as AntdApp } from 'antd';
 import zhCN from 'antd/locale/zh_CN';
-import { useEffect, useState } from 'react';
+import { StoreProvider } from '@/store';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
-
   return (
-    <ConfigProvider
-      locale={zhCN}
-      theme={{
-        token: {
-          colorPrimary: '#1677ff',
-        },
-      }}
-    >
-      {children}
+    <ConfigProvider locale={zhCN}>
+      <AntdApp>
+        <StoreProvider>
+          {children}
+        </StoreProvider>
+      </AntdApp>
     </ConfigProvider>
   );
 } 
