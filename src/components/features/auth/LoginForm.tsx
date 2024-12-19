@@ -13,15 +13,9 @@ import { Button } from '@/components/common/Button';
 export default function LoginForm() {
   const router = useRouter();
   const { message } = App.useApp();
-  const { user, token, setUser, setToken, setLoading, setError } = useAuthStore();
+  const { setUser, setToken, setLoading, setError } = useAuthStore();
   const [form] = Form.useForm();
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (token && user) {
-      router.replace('/dashboard');
-    }
-  }, [token, user, router]);
 
   const handleLogin = async (values: ILoginParams & { remember: boolean }) => {
     try {
@@ -32,10 +26,8 @@ export default function LoginForm() {
       const { remember, ...loginParams } = values;
       const response = await authService.login(loginParams);
       
-      await Promise.all([
-        setToken(response.token),
-        setUser(response.user)
-      ]);
+      setToken(response.token);
+      setUser(response.user);
 
       if (remember) {
         localStorage.setItem('remember-credentials', JSON.stringify({
@@ -46,7 +38,6 @@ export default function LoginForm() {
       }
 
       message.success('登录成功');
-      
       router.push('/dashboard');
       
     } catch (err) {
