@@ -22,10 +22,10 @@ const mockData = {
     expense: Math.random() * 800,
   })),
   assets: [
-    { name: '现金', value: 30000, percent: 30 },
-    { name: '基金', value: 40000, percent: 40 },
-    { name: '股票', value: 20000, percent: 20 },
-    { name: '其他', value: 10000, percent: 10 },
+    { type: '现金', value: 30000, percent: 30 },
+    { type: '基金', value: 40000, percent: 40 },
+    { type: '股票', value: 20000, percent: 20 },
+    { type: '其他', value: 10000, percent: 10 },
   ],
   transactions: [
     {
@@ -49,17 +49,21 @@ const mockData = {
 
 export default function DashboardPage() {
   return (
-    <div className="p-6">
+    <div className="p-4 space-y-4">
       <OverviewCards data={mockData.overview} />
-      <Row gutter={[16, 16]} className="mt-6">
-        <Col span={16}>
+      <Row gutter={[16, 16]}>
+        <Col xs={24} lg={14}>
           <TrendChart data={mockData.trend} />
         </Col>
-        <Col span={8}>
+        <Col xs={24} lg={10}>
           <AssetDistribution data={mockData.assets} />
         </Col>
       </Row>
-      <RecentTransactions data={mockData.transactions} />
+      <Row>
+        <Col span={24}>
+          <RecentTransactions data={mockData.transactions} />
+        </Col>
+      </Row>
     </div>
   );
 } 

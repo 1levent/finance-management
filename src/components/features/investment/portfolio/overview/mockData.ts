@@ -1,0 +1,65 @@
+import type { IAsset, IPortfolioStats } from '@/types/portfolio';
+
+export const mockStats: IPortfolioStats = {
+  totalAssets: 1500000,
+  totalProfit: 50000,
+  profitRate: 0.0333,
+  riskScore: 65,
+  assetDistribution: [
+    { type: 'stock', amount: 600000, percentage: 0.4 },
+    { type: 'fund', amount: 450000, percentage: 0.3 },
+    { type: 'bond', amount: 300000, percentage: 0.2 },
+    { type: 'deposit', amount: 150000, percentage: 0.1 },
+  ],
+};
+
+export const mockAssets: IAsset[] = [
+  {
+    id: '1',
+    name: '茅台股票',
+    type: 'stock',
+    amount: 100,
+    cost: 200000,
+    currentValue: 220000,
+    profit: 20000,
+    profitRate: 0.1,
+    status: 'active',
+    updateTime: '2024-03-20 15:00:00',
+  },
+  {
+    id: '2',
+    name: '易方达蓝筹精选',
+    type: 'fund',
+    amount: 50000,
+    cost: 150000,
+    currentValue: 165000,
+    profit: 15000,
+    profitRate: 0.1,
+    status: 'active',
+    updateTime: '2024-03-20 15:00:00',
+  },
+  {
+    id: '3',
+    name: '国债逆回购',
+    type: 'bond',
+    amount: 200000,
+    cost: 200000,
+    currentValue: 202000,
+    profit: 2000,
+    profitRate: 0.01,
+    status: 'active',
+    updateTime: '2024-03-20 15:00:00',
+  },
+  {
+    id: '4',
+    name: '定期存款',
+    type: 'deposit',
+    amount: 100000,
+    cost: 100000,
+    currentValue: 101750,
+    profit: 1750,
+    profitRate: 0.0175,
+    status: 'active',
+    updateTime: '2024-03-20 15:00:00',
+  },
+]; 
