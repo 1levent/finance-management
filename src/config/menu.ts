@@ -322,34 +322,6 @@ export const menuConfig: IMenuItem[] = [
       },
     ],
   },
-  {
-    key: '/notification',
-    icon: Icons.BellOutlined,
-    label: '消息通知',
-    path: '/notification',
-  },
-  {
-    key: '/setting',
-    icon: Icons.SettingOutlined,
-    label: '系统设置',
-    children: [
-      {
-        key: '/setting/profile',
-        label: '个人信息',
-        path: '/setting/profile',
-      },
-      {
-        key: '/setting/security',
-        label: '安全设置',
-        path: '/setting/security',
-      },
-      {
-        key: '/setting/preference',
-        label: '偏好设置',
-        path: '/setting/preference',
-      },
-    ],
-  },
 ];
 
 export const menuItems = convertToAntdMenuItem(menuConfig); 
