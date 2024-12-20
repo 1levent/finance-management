@@ -235,7 +235,33 @@ export const menuConfig: IMenuItem[] = [
     key: '/goal',
     icon: Icons.AimOutlined,
     label: '目标规划',
-    path: '/goal',
+    children: [
+      {
+        key: '/goal/overview',
+        label: '目标概览',
+        path: '/goal/overview',
+      },
+      {
+        key: '/goal/settings',
+        label: '目标设定',
+        path: '/goal/settings',
+      },
+      {
+        key: '/goal/savings',
+        label: '存款计划',
+        path: '/goal/savings',
+      },
+      {
+        key: '/goal/tracking',
+        label: '目标跟踪',
+        path: '/goal/tracking',
+      },
+      {
+        key: '/goal/analysis',
+        label: '完成度分析',
+        path: '/goal/analysis',
+      },
+    ],
   },
   {
     key: '/family',
