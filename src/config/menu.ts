@@ -184,9 +184,30 @@ export const menuConfig: IMenuItem[] = [
   },
   {
     key: '/budget',
-    icon: Icons.WalletOutlined,
     label: '预算管理',
-    path: '/budget',
+    icon: Icons.AccountBookOutlined,
+    children: [
+      {
+        key: '/budget/overview',
+        label: '预算概览',
+        path: '/budget/overview',
+      },
+      {
+        key: '/budget/settings',
+        label: '预算设置',
+        path: '/budget/settings',
+      },
+      {
+        key: '/budget/tracking',
+        label: '预算跟踪',
+        path: '/budget/tracking',
+      },
+      {
+        key: '/budget/analysis',
+        label: '预算分析',
+        path: '/budget/analysis',
+      },
+    ],
   },
   {
     key: '/report',

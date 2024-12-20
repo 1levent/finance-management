@@ -1,15 +1,13 @@
+'use client';
+
 import { Spin } from 'antd';
 
-const LoadingScreen = () => {
+export default function LoadingScreen() {
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="text-center">
-        <Spin size="large">
-          <div className="p-4">加载中...</div>
-        </Spin>
-      </div>
+    <div className="flex items-center justify-center min-h-[400px]">
+      <Spin>
+        <div className="p-24" />
+      </Spin>
     </div>
   );
-};
-
-export default LoadingScreen; 
+} 
