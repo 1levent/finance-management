@@ -12,6 +12,7 @@
     "@ant-design/charts": "^2.2.5",
     "@ant-design/cssinjs": "^1.22.1",
     "@ant-design/icons": "^5.5.2",
+    "@antv/g2plot": "^2.4.32",
     "@hookform/resolvers": "^3.9.1",
     "@tanstack/react-query": "^5.62.8",
     "@tanstack/react-query-devtools": "^5.62.8",

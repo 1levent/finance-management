@@ -1,51 +1,70 @@
 'use client';
 
 import { Card } from 'antd';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import type { ITrendData } from '@/types/dashboard';
+import { Line } from '@antv/g2plot';
+import { useEffect, useRef } from 'react';
 
-interface ITrendChartProps {
-  data: ITrendData[];
+interface ITrendData {
+  month: string;
+  type: string;
+  value: number;
 }
 
-export default function TrendChart({ data }: ITrendChartProps) {
-  const formattedData = data.map(item => ({
-    date: item.date,
-    收入: item.income,
-    支出: item.expense,
-  }));
+export default function TrendChart() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const chartRef = useRef<Line | null>(null);
+
+  useEffect(() => {
+    if (!containerRef.current) return;
+
+    const data = [
+      { month: '2024-01', type: '收入', value: 5000 },
+      { month: '2024-01', type: '支出', value: 4000 },
+      { month: '2024-02', type: '收入', value: 6000 },
+      { month: '2024-02', type: '支出', value: 4500 },
+      { month: '2024-03', type: '收入', value: 5500 },
+      { month: '2024-03', type: '支出', value: 5000 },
+    ];
+
+    chartRef.current = new Line(containerRef.current, {
+      data,
+      xField: 'month',
+      yField: 'value',
+      seriesField: 'type',
+      smooth: true,
+      animation: {
+        appear: {
+          animation: 'wave-in',
+          duration: 1000,
+        },
+      },
+      color: ['#1677ff', '#ff4d4f'],
+      yAxis: {
+        label: {
+          formatter: (v: string) => `¥${Number(v).toLocaleString()}`,
+        },
+      },
+      tooltip: {
+        shared: true,
+        showMarkers: true,
+      },
+      legend: {
+        position: 'top',
+      },
+    });
+
+    chartRef.current.render();
+
+    return () => {
+      if (chartRef.current) {
+        chartRef.current.destroy();
+      }
+    };
+  }, []);
 
   return (
-    <Card 
-      title="收支趋势" 
-      className="h-full"
-      styles={{ body: { padding: '12px' } }}
-    >
-      <div style={{ width: '100%', height: 300 }}>
-        <ResponsiveContainer>
-          <LineChart data={formattedData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="date" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line 
-              type="monotone" 
-              dataKey="收入" 
-              stroke="#1677ff" 
-              strokeWidth={2}
-              dot={{ fill: '#fff', stroke: '#1677ff', strokeWidth: 2 }}
-            />
-            <Line 
-              type="monotone" 
-              dataKey="支出" 
-              stroke="#ff4d4f" 
-              strokeWidth={2}
-              dot={{ fill: '#fff', stroke: '#ff4d4f', strokeWidth: 2 }}
-            />
-          </LineChart>
-        </ResponsiveContainer>
-      </div>
+    <Card title="收支趋势" size="small">
+      <div ref={containerRef} style={{ height: 300 }} />
     </Card>
   );
 } 

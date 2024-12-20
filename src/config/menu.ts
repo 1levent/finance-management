@@ -264,10 +264,63 @@ export const menuConfig: IMenuItem[] = [
     ],
   },
   {
-    key: '/family',
+    key: '/shared',
     icon: Icons.TeamOutlined,
-    label: '家庭账本',
-    path: '/family',
+    label: '共享账本',
+    children: [
+      {
+        key: '/shared/overview',
+        label: '账本概览',
+        path: '/shared/overview',
+      },
+      {
+        key: '/shared/accounts',
+        label: '共享账户',
+        children: [
+          {
+            key: '/shared/accounts/list',
+            label: '账户列表',
+            path: '/shared/accounts/list',
+          },
+          {
+            key: '/shared/accounts/transactions',
+            label: '共享账单',
+            path: '/shared/accounts/transactions',
+          },
+        ],
+      },
+      {
+        key: '/shared/members',
+        label: '成员管理',
+        children: [
+          {
+            key: '/shared/members/list',
+            label: '成员列表',
+            path: '/shared/members/list',
+          },
+          {
+            key: '/shared/members/invites',
+            label: '邀请管理',
+            path: '/shared/members/invites',
+          },
+          {
+            key: '/shared/members/roles',
+            label: '权限管理',
+            path: '/shared/members/roles',
+          },
+        ],
+      },
+      {
+        key: '/shared/budget',
+        label: '共享预算',
+        path: '/shared/budget',
+      },
+      {
+        key: '/shared/statistics',
+        label: '统计分析',
+        path: '/shared/statistics',
+      },
+    ],
   },
   {
     key: '/notification',
