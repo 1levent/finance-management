@@ -1,8 +1,36 @@
 'use client';
 
 import { Card } from 'antd';
-import { Pie } from '@antv/g2plot';
-import { useEffect, useRef } from 'react';
+import dynamic from 'next/dynamic';
+import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+
+// 动态导入图表组件
+const DynamicBaseChart = dynamic(
+  () => import('@/components/common/charts/BaseChart').then(mod => ({
+    default: mod.default,
+    CHART_TYPES: mod.CHART_TYPES,
+  })),
+  {
+    ssr: false,
+    loading: () => <div style={{ height: 300 }} />,
+  }
+);
+
+// 错误回退组件
+const ErrorFallback = ({ error, resetErrorBoundary }: FallbackProps) => {
+  return (
+    <div className="text-center p-4">
+      <h3 className="text-red-500">图表加载失败</h3>
+      <p className="text-gray-500">{error.message}</p>
+      <button
+        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
+        onClick={resetErrorBoundary}
+      >
+        重试
+      </button>
+    </div>
+  );
+};
 
 interface IAssetData {
   type: string;
@@ -10,54 +38,50 @@ interface IAssetData {
 }
 
 export default function AssetDistribution() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<Pie | null>(null);
+  const data: IAssetData[] = [
+    { type: '活期存款', value: 50000 },
+    { type: '定期存款', value: 100000 },
+    { type: '基金投资', value: 80000 },
+    { type: '股票投资', value: 70000 },
+    { type: '其他资产', value: 30000 },
+  ];
 
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    const data = [
-      { type: '活期存款', value: 10000 },
-      { type: '定期存款', value: 20000 },
-      { type: '基金投资', value: 15000 },
-      { type: '股票投资', value: 25000 },
-    ];
-
-    chartRef.current = new Pie(containerRef.current, {
-      data,
-      angleField: 'value',
-      colorField: 'type',
-      radius: 0.8,
-      label: {
-        type: 'inner',
-        offset: '-30%',
-        content: '{percentage}',
-        style: {
-          fill: '#fff',
-          fontSize: 14,
-          textAlign: 'center',
-        },
+  const options = {
+    data,
+    angleField: 'value',
+    colorField: 'type',
+    radius: 0.8,
+    label: {
+      type: 'outer',
+      formatter: (text: string, item: any) => {
+        return `${text}: ${((item.percent || 0) * 100).toFixed(0)}%`;
       },
-      legend: {
-        position: 'bottom',
+    },
+    tooltip: {
+      formatter: (datum: IAssetData) => {
+        return {
+          name: datum.type,
+          value: `¥${datum.value.toLocaleString()}`,
+        };
       },
-      interactions: [
-        { type: 'element-active' },
-      ],
-    });
-
-    chartRef.current.render();
-
-    return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy();
-      }
-    };
-  }, []);
+    },
+    interactions: [{ type: 'element-active' }],
+  };
 
   return (
     <Card title="资产分布" size="small">
-      <div ref={containerRef} style={{ height: 300 }} />
+      <ErrorBoundary 
+        FallbackComponent={ErrorFallback}
+        onReset={() => {
+          console.log('Resetting chart error state');
+        }}
+      >
+        <DynamicBaseChart 
+          type="Pie"
+          options={options}
+          style={{ height: 300 }} 
+        />
+      </ErrorBoundary>
     </Card>
   );
 } 
