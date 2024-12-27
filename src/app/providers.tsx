@@ -6,7 +6,15 @@ import { StoreProvider } from '@/store';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
-    <ConfigProvider locale={zhCN}>
+    <ConfigProvider
+      locale={zhCN}
+      wave={{ disabled: true }}
+      theme={{
+        token: {
+          // 这里可以添加其他主题配置
+        }
+      }}
+    >
       <AntdApp>
         <StoreProvider>
           {children}

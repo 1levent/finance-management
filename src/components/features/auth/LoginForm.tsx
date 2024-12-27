@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Form, Input, Button, Checkbox, Space, Divider, message, Row, Col } from 'antd';
+import { Form, Input, Button, Checkbox, Space, Divider, message, Row, Col, App } from 'antd';
 import { UserOutlined, LockOutlined, MobileOutlined, WechatOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -21,6 +21,7 @@ interface ILoginForm {
 }
 
 export default function LoginForm() {
+  const { message } = App.useApp();
   const [form] = Form.useForm();
   const router = useRouter();
   const { login } = useAuthStore();
@@ -33,30 +34,41 @@ export default function LoginForm() {
 
   // 处理登录提交
   const handleSubmit = async (values: ILoginForm) => {
-    setLoading(true);
     try {
-      let response;
-      if (loginType === 'account') {
-        response = await authService.login({
-          account: values.account!,
-          password: values.password!,
-        });
-      } else if (loginType === 'mobile') {
-        response = await authService.mobileLogin({
-          mobile: values.mobile!,
-          verifyCode: values.verifyCode!,
-        });
-      }
+      setLoading(true);
+      console.log('开始登录流程...', values);
+
+      const response = await authService.login({
+        account: values.account!,
+        password: values.password!,
+      });
       
-      if (response) {
-        login(response);
-        message.success('登录成功');
-        router.push('/dashboard');
-      }
+      console.log('登录API响应:', response);
+      
+      login(response);
+      console.log('Zustand store更新完成, token:', response.token);
+      
+      // 设置cookie
+      document.cookie = `token=${response.token}; path=/`;
+      console.log('Token已保存到cookie');
+      
+      message.success('登录成功');
+      console.log('准备跳转到 dashboard...');
+      
+      // 使用 replace 而不是 push
+      router.replace('/dashboard');
+      console.log('路由replace执行完成');
+      
+      // 强制刷新路由
+      router.refresh();
+      console.log('路由refresh执行完成');
+      
     } catch (error: any) {
+      console.error('登录失败:', error);
       message.error(error.message || '登录失败');
     } finally {
       setLoading(false);
+      console.log('登录流程结束');
     }
   };
 

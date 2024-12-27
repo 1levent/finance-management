@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 import type { IAuthResponse, IAuthState } from '@/types/auth';
 
 interface IAuthStore extends IAuthState {
@@ -22,22 +22,32 @@ export const useAuthStore = create<IAuthStore>()(
       setToken: (token) => set({ token }),
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
-      login: (response) => set({ 
-        user: response.user,
-        token: response.token,
-        loading: false,
-        error: null
-      }),
-      logout: () => set({ 
-        user: null, 
-        token: null,
-        loading: false,
-        error: null
-      }),
+      login: (response) => {
+        console.log('Auth Store: 开始更新状态...');
+        set({
+          user: response.user,
+          token: response.token,
+          loading: false,
+          error: null,
+        });
+        console.log('Auth Store: 状态更新完成');
+        
+        // 在本地存储中也保存 token
+        localStorage.setItem('token', response.token);
+        console.log('Auth Store: Token已保存到localStorage');
+      },
+      logout: () => {
+        set({
+          user: null,
+          token: null,
+          loading: false,
+          error: null,
+        });
+        localStorage.removeItem('token');
+      },
     }),
     {
       name: 'auth-storage',
-      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
         token: state.token,

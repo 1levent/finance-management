@@ -2,49 +2,23 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const { pathname } = request.nextUrl;
-  const isAuthPage = ['/login', '/register', '/forgot-password'].includes(pathname);
-  
-  try {
-    const authStorage = request.cookies.get('auth-storage')?.value;
-    let token = null;
+  const token = request.cookies.get('token')?.value;
+  const isLoginPage = request.nextUrl.pathname === '/login';
+  const isDashboardPage = request.nextUrl.pathname.startsWith('/dashboard');
 
-    if (authStorage) {
-      try {
-        const parsed = JSON.parse(authStorage);
-        token = parsed?.state?.token;
-      } catch (e) {
-        return NextResponse.redirect(new URL('/login', request.url));
-      }
-    }
+  // 如果是登录页面且已有token，重定向到dashboard
+  if (isLoginPage && token) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
 
-    if (isAuthPage && token) {
-      return NextResponse.redirect(new URL('/dashboard', request.url));
-    }
-
-    if (!isAuthPage && !token && pathname !== '/') {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    const response = NextResponse.next();
-
-    if (token && authStorage) {
-      response.cookies.set('auth-storage', authStorage, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60
-      });
-    }
-
-    return response;
-  } catch (error) {
+  // 如果是dashboard页面且没有token，重定向到登录页
+  if (isDashboardPage && !token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/login', '/dashboard/:path*']
 }; 

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import AntdProvider from '@/components/providers/AntdProvider';
-import RouteGuard from '@/components/auth/RouteGuard';
+import { Providers } from './providers';
 import { siteConfig } from '@/config/site';
 import './globals.css';
 import 'antd/dist/reset.css';
@@ -40,9 +39,7 @@ export default function RootLayout({
         `}</style>
       </head>
       <body className={inter.className} suppressHydrationWarning>
-        <AntdProvider>
-          <RouteGuard>{children}</RouteGuard>
-        </AntdProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
