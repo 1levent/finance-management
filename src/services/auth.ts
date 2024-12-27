@@ -16,15 +16,49 @@ const MOCK_ADMIN: IAuthResponse = {
 };
 
 export const authService = {
-  login: async (params: ILoginParams): Promise<IAuthResponse> => {
-    // 模拟登录延迟
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  // 账号密码登录
+  login: async (params: { account: string; password: string }): Promise<IAuthResponse> => {
+    // TODO: 实际API调用
+    return Promise.resolve({
+      user: {
+        id: '1',
+        email: params.account,
+        username: 'Admin',
+      },
+      token: 'mock-jwt-token',
+      timestamp: '2024-03-14T00:00:00.000Z',
+    });
+  },
 
-    // 模拟登录验证
-    if (params.email === 'admin@example.com' && params.password === 'admin123') {
-      return Promise.resolve(MOCK_ADMIN);
-    }
-    return Promise.reject(new Error('邮箱或密码错误'));
+  // 手机验证码登录
+  mobileLogin: async (params: { mobile: string; verifyCode: string }): Promise<IAuthResponse> => {
+    // TODO: 实际API调用
+    return Promise.resolve({
+      user: {
+        id: '1',
+        email: '',
+        username: 'User',
+      },
+      token: 'mock-jwt-token',
+      timestamp: '2024-03-14T00:00:00.000Z',
+    });
+  },
+
+  // 发送验证码
+  sendVerifyCode: async (mobile: string): Promise<void> => {
+    // TODO: 实际API调用
+    return Promise.resolve();
+  },
+
+  // 微信扫码登录状态查询
+  checkWechatLoginStatus: async (ticket: string): Promise<{
+    status: 'waiting' | 'scanning' | 'confirmed' | 'expired';
+    token?: string;
+  }> => {
+    // TODO: 实际API调用
+    return Promise.resolve({
+      status: 'waiting',
+    });
   },
 
   getCurrentUser: async (): Promise<IAuthResponse> => {

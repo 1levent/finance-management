@@ -1,41 +1,17 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
+import type { IAuthResponse, IAuthState } from '@/types/auth';
 
-interface IUser {
-  id: string;
-  email: string;
-  username: string;
-}
-
-interface IAuthState {
-  user: IUser | null;
-  token: string | null;
-  loading: boolean;
-  error: string | null;
-  setUser: (user: IUser | null) => void;
+interface IAuthStore extends IAuthState {
+  setUser: (user: IAuthState['user']) => void;
   setToken: (token: string | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+  login: (response: IAuthResponse) => void;
   logout: () => void;
 }
 
-// 创建混合存储
-const hybridStorage = {
-  getItem: (name: string) => {
-    const value = localStorage.getItem(name);
-    return value;
-  },
-  setItem: (name: string, value: string) => {
-    localStorage.setItem(name, value);
-    document.cookie = `${name}=${value};path=/;max-age=${7 * 24 * 60 * 60}`;
-  },
-  removeItem: (name: string) => {
-    localStorage.removeItem(name);
-    document.cookie = `${name}=;path=/;expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-  },
-};
-
-export const useAuthStore = create<IAuthState>()(
+export const useAuthStore = create<IAuthStore>()(
   persist(
     (set) => ({
       user: null,
@@ -46,14 +22,22 @@ export const useAuthStore = create<IAuthState>()(
       setToken: (token) => set({ token }),
       setLoading: (loading) => set({ loading }),
       setError: (error) => set({ error }),
-      logout: () => {
-        set({ user: null, token: null, error: null });
-        localStorage.removeItem('remember-credentials');
-      },
+      login: (response) => set({ 
+        user: response.user,
+        token: response.token,
+        loading: false,
+        error: null
+      }),
+      logout: () => set({ 
+        user: null, 
+        token: null,
+        loading: false,
+        error: null
+      }),
     }),
     {
       name: 'auth-storage',
-      storage: createJSONStorage(() => hybridStorage),
+      storage: createJSONStorage(() => localStorage),
       partialize: (state) => ({
         user: state.user,
         token: state.token,

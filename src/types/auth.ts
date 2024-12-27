@@ -12,8 +12,13 @@ export interface IAuthState {
 }
 
 export interface ILoginParams {
-  email: string;
+  account: string;
   password: string;
+}
+
+export interface IMobileLoginParams {
+  mobile: string;
+  verifyCode: string;
 }
 
 export interface IAuthResponse {
