@@ -15,6 +15,24 @@ const MOCK_ADMIN: IAuthResponse = {
   timestamp: MOCK_TIMESTAMP,
 };
 
+// 模拟注册响应
+const mockRegisterResponse = (data: { username: string; email: string; password: string }): Promise<IAuthResponse> => {
+  // 模拟注册延迟
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        user: {
+          id: Math.random().toString(36).substr(2, 9), // 生成随机ID
+          email: data.email,
+          username: data.username,
+        },
+        token: `mock-jwt-token-${Date.now()}`, // 生成唯一token
+        timestamp: new Date().toISOString(),
+      });
+    }, 800); // 模拟网络延迟
+  });
+};
+
 export const authService = {
   // 账号密码登录
   login: async (params: { account: string; password: string }): Promise<IAuthResponse> => {
@@ -72,21 +90,8 @@ export const authService = {
     return Promise.reject(new Error('未登录或登录已过期'));
   },
 
-  register: async (params: IRegisterParams): Promise<IAuthResponse> => {
-    // 模拟注册延迟
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // 模拟注册成功
-    const mockResponse: IAuthResponse = {
-      user: {
-        id: '2', // 新用户 ID
-        email: params.email,
-        username: params.username,
-      },
-      token: 'mock-jwt-token-new-user',
-      timestamp: MOCK_TIMESTAMP,
-    };
-
-    return Promise.resolve(mockResponse);
+  register: async (data: { username: string; email: string; password: string }) => {
+    // 这里替换为实际的 API 调用
+    return mockRegisterResponse(data);
   },
 }; 

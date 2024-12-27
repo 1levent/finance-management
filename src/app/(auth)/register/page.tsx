@@ -5,7 +5,7 @@ import AuthLayout from '@/components/layout/AuthLayout';
 
 export default function RegisterPage() {
   return (
-    <AuthLayout title="注册账号">
+    <AuthLayout>
       <RegisterForm />
     </AuthLayout>
   );
